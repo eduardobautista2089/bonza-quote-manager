@@ -44,13 +44,16 @@ This plugin includes a basic PHPUnit test located in the `tests` directory.
 
 1. Install dependencies:
    ```bash
-   composer install
+      composer install
+   ```
 2. Set up test suite (if needed):
    ```bash
       wp scaffold plugin-tests bonza-quote-manager
+   ```
 3. Run PHPUnit:
    ```bash
       ./vendor/bin/phpunit
+   ```
 
 **Note:** See `phpunit.xml.dist` for test configuration.
 
@@ -59,6 +62,7 @@ This plugin includes a basic PHPUnit test located in the `tests` directory.
 1. Clone the repo into your /wp-content/plugins directory:
    ```bash
       git clone https://github.com/your-username/bonza-quote-plugin.git
+   ```
 2. Activate the plugin in the WordPress Admin → Plugins.
 3. Add the shortcode `[bonza_quote_form]` to any post or page.
 
@@ -78,9 +82,11 @@ Developers can hook into these to extend functionality.
 ### 📝 License
 
 This plugin is licensed under the GNU General Public License v2.0 or later.
+
 See https://www.gnu.org/licenses/gpl-2.0.html for full terms.
 
 ### 📬 Contact
 
 Developed by Eduardo Bautista
+
 Questions? Reach me via GitHub or eduardobautista2089@gmail.com
