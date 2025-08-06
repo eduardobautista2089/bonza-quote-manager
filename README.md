@@ -50,8 +50,9 @@ This plugin includes a basic PHPUnit test located in the `tests` directory.
       wp scaffold plugin-tests bonza-quote-manager
 3. Run PHPUnit:
    ```bash
-      w./vendor/bin/phpunit
-   Note: See phpunit.xml.dist for test configuration.
+      ./vendor/bin/phpunit
+
+**Note:** See `phpunit.xml.dist` for test configuration.
 
 ### ⚙️ Installation Instructions
 
@@ -59,19 +60,19 @@ This plugin includes a basic PHPUnit test located in the `tests` directory.
    ```bash
       git clone https://github.com/your-username/bonza-quote-plugin.git
 2. Activate the plugin in the WordPress Admin → Plugins.
-3. Add the shortcode [bonza_quote_form] to any post or page.
+3. Add the shortcode `[bonza_quote_form]` to any post or page.
 
 ### 📌 Assumptions
 
--The plugin uses a custom post type called bonza_quote to store submissions.
--Email notifications are sent to the WordPress admin_email.
--No frontend styling is included — it inherits from your theme.
+- The plugin uses a custom post type called bonza_quote to store submissions.
+- Email notifications are sent to the WordPress admin_email.
+- No frontend styling is included — it inherits from your theme.
 
 ### 🧠 Extensibility
 
 The plugin includes the following WordPress hooks:
--**bonza_quote_submitted** — Triggered after a quote is saved
--**bonza_quote_status_updated** — Triggered after a status change
+- **bonza_quote_submitted** — Triggered after a quote is saved
+- **bonza_quote_status_updated** — Triggered after a status change
 Developers can hook into these to extend functionality.
 
 ### 📝 License

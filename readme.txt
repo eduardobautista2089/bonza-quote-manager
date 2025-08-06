@@ -1,5 +1,5 @@
 === Bonza Quote Management Plugin ===
-Contributors: your-github-username
+Contributors: eduardobautista2089
 Tags: quotes, form, admin, approval, service requests, shortcode
 Requires at least: 5.5
 Tested up to: 6.5
