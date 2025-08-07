@@ -2,6 +2,7 @@
 namespace BonzaQuote;
 
 use BonzaQuote\Admin\QuoteAdmin;
+use BonzaQuote\Admin\QuoteListTable;
 use BonzaQuote\Frontend\QuoteForm;
 use BonzaQuote\PostTypes\QuotePostType;
 

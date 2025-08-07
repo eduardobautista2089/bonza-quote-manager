@@ -22,11 +22,12 @@ class QuotePostType {
     public function register_post_type() {
         register_post_type( 'bonza_quote', [
             'labels' => [
-                'name' => 'Qoutes',
+                'name' => 'Quotes',
                 'singular_name' => 'Quote',
             ],
             'public' => false,
-            'show_ui' => false,
+            'show_ui' => true,
+            'show_in_menu' => false,
             'supports' => [ 'title', 'editor' ],
         ]);
     }
