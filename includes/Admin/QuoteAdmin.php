@@ -18,6 +18,28 @@ class QuoteAdmin {
         add_filter( 'set-screen-option', function( $status, $option, $value ) {
             return ( $option === 'quotes_per_page' ) ? $value : $status;
         }, 10, 3 );
+
+        add_action( 'admin_init', function() {
+            if ( isset( $_GET['bq_action' ], $_GET['post'] ) && $_GET['bq_action'] === 'restore' ) {
+                $post_id = absint( $_GET['post'] );
+
+                if ( ! current_user_can( 'edit_post', $post_id ) ) {
+                    wp_die( __( 'You do not have permission to restore this quote.', 'bonza-quote') );
+                }
+
+                if ( ! wp_verify_nonce( $_GET['_wpnonce'], 'bq_restore_' . $post_id ) ) {
+                    wp_die( __( 'Security check failed.', 'bonza-quote' ) );
+                }
+
+                wp_untrash_post( $post_id );
+                wp_update_post( [
+                    'ID' => $post_id,
+                    'post_status' => 'pending',
+                ] );
+                wp_redirect( admin_url( 'admin.php?page=bonza-quotes&post_status=pending&restored=1' ) );
+                exit;
+            }
+        } );
     }
 
     /**
