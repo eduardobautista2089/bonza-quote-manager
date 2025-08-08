@@ -84,6 +84,10 @@ class QuoteForm {
                 ],
             ] );
 
+            // Send email with HTML + plain-text fallback
+            $mailer = new QuoteMailer();
+            $mailer->send_admin_notification( $name, $email, $service, $notes );
+
             add_action( 'wp_footer', function () {
                 echo "<script>alert('Your quote has been submitted.');</script>";
             } );
