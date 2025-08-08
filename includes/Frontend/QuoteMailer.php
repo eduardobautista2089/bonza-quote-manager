@@ -55,7 +55,7 @@ class QuoteMailer {
                     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f4; padding:20px;">
                         <tr>
                         <td align="center">
-                            <table role="presentation" max-width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border-radius:8px; overflow:hidden;">
+                            <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border-radius:8px; overflow:hidden;">
                             <tr>
                                 <td style="background-color:#2b5797; color:#ffffff; padding:20px; text-align:center;">
                                 <h1 style="margin:0; font-size:22px; font-weight:bold;">New Quote Request</h1>
@@ -113,7 +113,7 @@ class QuoteMailer {
         // Send plain text as alternative for testing environment like Mailtrap
         // (In production, PHPMailer handles multipart automatically)
         // This is optional - uncomment if you need explicit sending
-        // wp_mail( $admin_email, $subject, $plain_body );
+        $result  .= wp_mail( $admin_email, $subject, $plain_body );
 
         return $result;
     }
