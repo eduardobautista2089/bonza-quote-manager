@@ -20,5 +20,26 @@ class Plugin {
         ( new QuotePostType() )->register();
         ( new QuoteForm() )->init();
         ( new QuoteAdmin() )->init();
+        add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
+    }
+
+    public function enqueue_admin_scripts ( $hook ) {
+        $screen = get_current_screen();
+
+        if ( ! $screen ) {
+            return;
+        }
+
+        if (
+            $screen->base === 'post' &&
+            $screen->post_type === 'bonza_quote'
+        ) {
+            wp_enqueue_script(
+                'bonza-quote-admin',
+                BONZA_QUOTE_PLUGIN_URL . 'assets/js/admin/bonza-quote-admin.js',
+                [ 'jquery' ],
+                true
+            );
+        }
     }
 }
