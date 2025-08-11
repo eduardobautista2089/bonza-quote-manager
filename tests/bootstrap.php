@@ -8,16 +8,16 @@ if ( ! $_tests_dir ) {
 
 require_once $_tests_dir . '/includes/functions.php';
 
-// Start up the WP testing environment
-require $_tests_dir . '/includes/bootstrap.php';
-
 // Suppress only the known "twentytwentyfive/format" block binding notice in WP 6.5+
-add_filter( 'doing_it_wrong_trigger_error', function( $trigger, $function, $message ) {
+tests_add_filter( 'doing_it_wrong_trigger_error', function( $trigger, $function, $message ) {
     if ( strpos( $message, 'twentytwentyfive/format' ) !== false ) {
         return false; // Ignore this specific notice
     }
     return $trigger; // Keep other notices intact
 }, 10, 3 );
+
+// Start up the WP testing environment
+require $_tests_dir . '/includes/bootstrap.php';
 
 // Load your plugin
 require_once dirname( __DIR__ ) . '/bonza-quote-management.php';
