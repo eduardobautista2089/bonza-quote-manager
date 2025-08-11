@@ -1,10 +1,14 @@
 <?php
-class SampleTest extends WP_UnitTestCase {
-    public function test_constants_are_defined() {
-        $this->assertTrue( defined( 'BONZA_QUOTE_PLUGIN_PATH' ) );
-    }
+use PHPUnit\Framework\TestCase;
+use BonzaQuote\Plugin;
 
-    public function test_plugin_class_exists() {
-        $this->assertTrue( class_exists( \BonzaQuote\Plugin::class ) );
+class BasicTest extends WP_UnitTestCase {
+    public function test_plugin_can_run_and_register_post_type() {
+        $plugin = new Plugin();
+        $plugin->run();
+
+        do_action( 'init' );
+
+        $this->assertTrue( post_type_exists( 'bonza_quote' ), 'Cstom post type bonza_quote is registered' );
     }
 }
