@@ -26,6 +26,7 @@ class Plugin {
 
         add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_public_assets' ] );
         add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_assets' ] );
+    
     }
 
     /**
@@ -48,6 +49,11 @@ class Plugin {
             BONZA_QUOTE_PLUGIN_VERSION,
             true
         );
+
+        wp_localize_script( 'bonza-quote-public', 'bq_ajax', [
+            'ajax_url'       => admin_url( 'admin-ajax.php' ),
+            'error_message'  => __( 'Something went wrong. Please try again.', 'bonza-quote' ),
+        ] );
 
         // Pass flash message if needed
         if ( isset( $_GET['bq_submitted'] ) && $_GET['bq_submitted'] === '1' ) {

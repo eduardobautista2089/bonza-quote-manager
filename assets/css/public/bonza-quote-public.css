@@ -4,10 +4,8 @@
     top: var(--bonza-flash-top, 20px);
     right: var(--bonza-flash-right, 20px);
 
-    /* Background color from theme's primary, fallback to green */
+    /* Theme adaptive colors */
     background: var(--wp--preset--color--primary, #4caf50);
-
-    /* Text color from theme's background or white */
     color: var(--wp--preset--color--background, #fff);
 
     padding: var(--wp--preset--spacing--20, 12px) var(--wp--preset--spacing--30, 16px);
@@ -33,7 +31,7 @@
     background: var(--wp--preset--color--error, #e53935);
 }
 
-/* Animations (optional) */
+/* Animations (reduced motion respect) */
 @keyframes bonzaFadeIn {
     to {
         opacity: 1;
@@ -45,5 +43,69 @@
     to {
         opacity: 0;
         transform: translateY(20px);
+    }
+}
+
+/* Disable animations/transitions for reduced motion users */
+@media (prefers-reduced-motion: reduce) {
+  .bonza-quote-flash {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Submit Button */
+.bq-submit-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0.6em 1.2em;
+    background: var(--wp--preset--color--primary, #0073aa);
+    color: var(--wp--preset--color--background, #fff);
+    border: none;
+    border-radius: var(--wp--custom--radius--small, 4px);
+    cursor: pointer;
+    font-size: inherit;
+    transition: background 0.2s ease, opacity 0.2s ease;
+}
+
+/* Hover and focus-visible states */
+.bq-submit-btn:hover:not(.loading),
+.bq-submit-btn:focus-visible:not(.loading) {
+    background: var(--wp--preset--color--primary-hover, #005177);
+    outline: 2px solid var(--wp--preset--color--primary-hover, #005177);
+    outline-offset: 2px;
+}
+
+.bq-submit-btn.loading {
+    opacity: 0.8;
+    cursor: wait;
+}
+
+/* Spinner */
+.bq-btn-spinner {
+    width: 1em;
+    height: 1em;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: var(--wp--preset--color--background, #fff);
+    border-radius: 50%;
+    animation: bq-spin 0.6s linear infinite;
+    display: none;
+}
+
+.bq-submit-btn.loading .bq-btn-spinner {
+    display: inline-block;
+}
+
+@keyframes bq-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bq-btn-spinner {
+        animation: none;
     }
 }
