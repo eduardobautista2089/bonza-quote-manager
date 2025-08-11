@@ -43,6 +43,9 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
+      - name: Prepare WordPress test suite folder
+        run: mkdir -p wordpress-tests-lib/includes
+
       - name: Download WordPress test suite
         run: |
           wget -q https://raw.githubusercontent.com/WordPress/wordpress-develop/master/tests/phpunit/includes/functions.php -O wordpress-tests-lib/includes/functions.php
@@ -50,9 +53,11 @@ jobs:
 
       - name: Prepare WordPress test environment
         run: |
-          mkdir -p wordpress-tests-lib/includes
-          # Configure environment variables for tests bootstrap
-          echo "define('WP_TESTS_DIR', 'wordpress-tests-lib');" >> phpunit.xml
+          # If you want to modify phpunit.xml, consider using yq/jq or sed. 
+          # Appending a define here is not effective since phpunit.xml is XML.
+          # So you might want to configure WP_TESTS_DIR in your bootstrap file or env vars.
+
+          echo "WP_TESTS_DIR=wordpress-tests-lib" >> $GITHUB_ENV
 
       - name: Run PHPUnit tests
         env:
