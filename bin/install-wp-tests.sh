@@ -2,8 +2,6 @@
 #
 # Usage: install-wp-tests.sh <db-name> <db-user> <db-pass> [db-host] [wp-version]
 #
-# Example: ./bin/install-wp-tests.sh wordpress_test root root localhost latest
-#
 
 set -e
 
@@ -55,4 +53,24 @@ install_test_suite() {
     WP_TAG="$WP_VERSION"
   fi
 
-  download "https://github.com/WordPress/wordpress-develop/archive
+  download "https://github.com/WordPress/wordpress-develop/archive/refs/tags/$WP_TAG.zip" /tmp/wp-develop.zip
+  unzip -q /tmp/wp-develop.zip -d /tmp/wp-develop
+
+  cp -r /tmp/wp-develop/wordpress-develop-$WP_TAG/tests/phpunit/* "$WP_TESTS_DIR"
+
+  # Copy sample config and replace DB creds
+  cp "$WP_TESTS_DIR"/wp-tests-config-sample.php "$WP_TESTS_DIR"/wp-tests-config.php
+  sed -i "s/youremptytestdbnamehere/$DB_NAME/" "$WP_TESTS_DIR"/wp-tests-config.php
+  sed -i "s/yourusernamehere/$DB_USER/" "$WP_TESTS_DIR"/wp-tests-config.php
+  sed -i "s/yourpasswordhere/$DB_PASS/" "$WP_TESTS_DIR"/wp-tests-config.php
+  sed -i "s|localhost|$DB_HOST|" "$WP_TESTS_DIR"/wp-tests-config.php
+}
+
+install_db() {
+  # Create the database
+  mysqladmin create "$DB_NAME" --user="$DB_USER" --password="$DB_PASS" --host="$DB_HOST" --force
+}
+
+install_wp
+install_test_suite
+install_db
