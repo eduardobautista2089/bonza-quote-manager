@@ -2,9 +2,9 @@ name: WordPress Plugin PHPUnit Tests
 
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
   pull_request:
-    branches: ["main"]
+    branches: [ "main" ]
 
 jobs:
   test:
@@ -39,14 +39,14 @@ jobs:
           extensions: mysqli
           coverage: none
 
-      - name: Install required system packages
-        run: sudo apt-get update && sudo apt-get install -y subversion git
-
       - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
-
-      - name: Install WordPress test suite
         run: |
+          composer install --prefer-dist --no-progress --no-suggest
+          composer require --dev yoast/phpunit-polyfills
+
+      - name: Install WP test suite
+        run: |
+          chmod +x bin/install-wp-tests.sh
           bash bin/install-wp-tests.sh wordpress_test root root 127.0.0.1 latest
 
       - name: Run PHPUnit
