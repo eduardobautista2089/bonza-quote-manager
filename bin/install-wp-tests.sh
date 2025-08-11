@@ -32,11 +32,13 @@ install_wp() {
     mkdir -p "$WP_CORE_DIR"
 
     if [ "$WP_VERSION" == "latest" ]; then
-        local ARCHIVE_NAME='latest'
-    else
-        local ARCHIVE_NAME="wordpress-$WP_VERSION"
+        WP_VERSION=$(curl -s https://api.wordpress.org/core/version-check/1.7/ \
+            | grep -o '"version":"[0-9.]*"' \
+            | head -1 \
+            | sed 's/"version":"//;s/"//')
     fi
 
+    local ARCHIVE_NAME="wordpress-$WP_VERSION"
     download "https://wordpress.org/${ARCHIVE_NAME}.tar.gz" /tmp/wordpress.tar.gz
     tar --strip-components=1 -zxmf /tmp/wordpress.tar.gz -C "$WP_CORE_DIR"
 }
@@ -48,8 +50,12 @@ install_test_suite() {
 
     mkdir -p "$WP_TESTS_DIR"
 
-    svn co --quiet "https://develop.svn.wordpress.org/tags/$(wp core version)/tests/phpunit/includes/" "$WP_TESTS_DIR/includes"
-    svn co --quiet "https://develop.svn.wordpress.org/tags/$(wp core version)/tests/phpunit/data/" "$WP_TESTS_DIR/data"
+    download "https://develop.svn.wordpress.org/tags/$WP_VERSION/tests/phpunit/includes/" /tmp/includes.zip
+    download "https://develop.svn.wordpress.org/tags/$WP_VERSION/tests/phpunit/data/" /tmp/data.zip
+
+    # Extract includes and data
+    unzip -q /tmp/includes.zip -d "$WP_TESTS_DIR/includes"
+    unzip -q /tmp/data.zip -d "$WP_TESTS_DIR/data"
 }
 
 install_db() {
