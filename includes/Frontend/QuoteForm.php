@@ -23,9 +23,19 @@ class QuoteForm {
      * @return string
      */
     public function render_form() {
+        $success = isset( $_GET['bq_success'] ) && $_GET['bq_success'] == '1';
+
         ob_start();
+
+        if ( $success ) {
+            echo '<div class="bq-success-message" style="padding:10px; background:#e0f7e9; border:1px solid #a5d6a7; margin-bottom:15px; border-radius: 3px;">
+                Thank you! Your quote has been submitted.
+              </div>';
+        }
+        
         ?>
-       <form method="post">
+
+        <form method="post">
             <p>
                 <label for="bq_name">Name <span aria-hidden="true">*</span></label>
                 <input type="text" id="bq_name" name="bq_name" required />
@@ -88,9 +98,8 @@ class QuoteForm {
             $mailer = new QuoteMailer();
             $mailer->send_admin_notification( $name, $email, $service, $notes );
 
-            add_action( 'wp_footer', function () {
-                echo "<script>alert('Your quote has been submitted.');</script>";
-            } );
+            wp_safe_redirect( add_query_arg( 'bq_success', '1', wp_get_referer() ) );
+            exit;
         }
     }
 }

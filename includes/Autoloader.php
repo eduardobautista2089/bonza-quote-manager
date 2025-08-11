@@ -3,36 +3,42 @@ namespace BonzaQuote;
 
 /**
  * Class Autoloader
- * 
+ *
  * Handles PSR-4-style autoloading for the Bonza Quote plugin classes.
- * Looks in the 'includes/' directory for namespaced classes.
+ * Assumes all plugin classes are in the `includes/` directory under the plugin root.
  */
 class Autoloader {
+
     /**
-     * Registers the autoloader function using SPL.
+     * Registers the autoloader function with SPL.
+     *
+     * @return void
      */
     public static function register() {
         spl_autoload_register( [ __CLASS__, 'autoload' ] );
     }
 
     /**
-     * Autoloads classes within the BonzaQuote namespace.
+     * Autoloads classes from the BonzaQuote namespace.
      *
      * @param string $class Fully-qualified class name.
+     * @return void
      */
     private static function autoload( $class ) {
-        // Check if the class belongs to this plugin's namespace
-        if ( strpos( $class, __NAMESPACE__ . '\\' ) === 0 ) {
-            // Remove the namespace prefix and convert to file path
-            $path = str_replace( '\\', '/', substr( $class, strlen( __NAMESPACE__ . '\\' ) ) );
+        // Only handle classes from this plugin's namespace.
+        if ( strpos( $class, __NAMESPACE__ . '\\' ) !== 0 ) {
+            return;
+        }
 
-            // Build the full path to the class file
-            $file = BONZA_QUOTE_PLUGIN_PATH . 'includes/' . $path . '.php';
+        // Remove namespace prefix and convert to a file path.
+        $relative_path = str_replace( '\\', '/', substr( $class, strlen( __NAMESPACE__ . '\\' ) ) );
 
-            // Include the file if it exists
-            if ( file_exists( $file ) ) {
-                require $file;
-            }
+        // Build the absolute path to the class file.
+        $file = trailingslashit( BONZA_QUOTE_PLUGIN_PATH ) . 'includes/' . $relative_path . '.php';
+
+        // Require the file if it exists.
+        if ( is_readable( $file ) ) {
+            require $file;
         }
     }
 }

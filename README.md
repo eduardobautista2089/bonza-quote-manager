@@ -55,7 +55,7 @@ This plugin includes a basic PHPUnit test located in the `tests` directory.
       ./vendor/bin/phpunit
    ```
 
-**Note:** See `phpunit.xml.dist` for test configuration.
+**Note:** See `phpunit.xml` for test configuration.
 
 ### ⚙️ Installation Instructions
 
