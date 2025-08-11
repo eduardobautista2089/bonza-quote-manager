@@ -1,27 +1,16 @@
 #!/usr/bin/env bash
-#
-# Usage: bin/install-wp-tests.sh <db-name> <db-user> <db-pass> [db-host] [wp-version]
-#
-# Example: bin/install-wp-tests.sh wordpress_test root root 127.0.0.1 latest
-#
-# This script will:
-# 1. Download WordPress core
-# 2. Download the PHPUnit test suite from the WordPress GitHub mirror
-# 3. Create a wp-tests-config.php file
-# 4. Create the database for testing
 
-set -ex
+# Exit on error
+set -e
 
-DB_NAME=$1
-DB_USER=$2
-DB_PASS=$3
-DB_HOST=${4-localhost}
-WP_VERSION=${5-latest}
+DB_NAME=${1:-wordpress_test}
+DB_USER=${2:-root}
+DB_PASS=${3:-root}
+DB_HOST=${4:-127.0.0.1}
+WP_VERSION=${5:-latest}
+WP_CORE_DIR=${WP_CORE_DIR:-/tmp/wordpress}
+WP_TESTS_DIR=${WP_TESTS_DIR:-/tmp/wordpress-tests-lib}
 
-WP_CORE_DIR=/tmp/wordpress
-WP_TESTS_DIR=/tmp/wordpress-tests-lib
-
-# Download helper
 download() {
     local url=$1
     local target=$2
@@ -31,6 +20,7 @@ download() {
 
 install_wp() {
     if [ -d "$WP_CORE_DIR" ]; then
+        echo "WordPress core already installed in $WP_CORE_DIR"
         return
     fi
 
@@ -50,23 +40,23 @@ install_test_suite() {
     mkdir -p "$WP_TESTS_DIR"
 
     if [ "$WP_VERSION" == "latest" ]; then
-        # Get latest tag from GitHub API
         WP_TAG=$(curl -s https://api.github.com/repos/WordPress/wordpress-develop/tags | grep 'name' | head -1 | awk -F '"' '{print $4}')
     else
-        WP_TAG="{$WP_VERSION}"
+        WP_TAG="$WP_VERSION"
     fi
 
-    # Download develop repo from GitHub
     download "https://github.com/WordPress/wordpress-develop/archive/$WP_TAG.zip" /tmp/wp-develop.zip
     unzip -q /tmp/wp-develop.zip -d /tmp/wp-develop
 
-    # Copy test suite
-    cp -r /tmp/wp-develop/wordpress-develop-$WP_TAG/tests/phpunit/* "$WP_TESTS_DIR"
+    WP_DEV_DIR="/tmp/wp-develop/wordpress-develop-$WP_TAG"
 
-    # Copy sample config
-    cp "$WP_TESTS_DIR/wp-tests-config-sample.php" "$WP_TESTS_DIR/wp-tests-config.php"
+    # Copy the PHPUnit test suite
+    cp -r "$WP_DEV_DIR/tests/phpunit/"* "$WP_TESTS_DIR"
 
-    # Update config
+    # Copy the sample config from root of repo
+    cp "$WP_DEV_DIR/wp-tests-config-sample.php" "$WP_TESTS_DIR/wp-tests-config.php"
+
+    # Configure DB credentials
     sed -i "s/youremptytestdbnamehere/$DB_NAME/" "$WP_TESTS_DIR/wp-tests-config.php"
     sed -i "s/yourusernamehere/$DB_USER/" "$WP_TESTS_DIR/wp-tests-config.php"
     sed -i "s/yourpasswordhere/$DB_PASS/" "$WP_TESTS_DIR/wp-tests-config.php"
@@ -74,9 +64,28 @@ install_test_suite() {
 }
 
 install_db() {
-    mysqladmin create "$DB_NAME" --user="$DB_USER" --password="$DB_PASS" --host="$DB_HOST" || true
+    # Parse DB_HOST for port/socket
+    PARTS=(${DB_HOST//:/ })
+    DB_HOSTNAME=${PARTS[0]}
+    DB_SOCK_OR_PORT=${PARTS[1]}
+    EXTRA=""
+
+    if ! [ -z "$DB_HOSTNAME" ]; then
+        if [[ "$DB_SOCK_OR_PORT" =~ ^[0-9]+$ ]]; then
+            EXTRA="--host=$DB_HOSTNAME --port=$DB_SOCK_OR_PORT --protocol=tcp"
+        elif [ -n "$DB_SOCK_OR_PORT" ]; then
+            EXTRA="--socket=$DB_SOCK_OR_PORT"
+        else
+            EXTRA="--host=$DB_HOSTNAME --protocol=tcp"
+        fi
+    fi
+
+    # Create database if it doesn't exist
+    mysqladmin create "$DB_NAME" --user="$DB_USER" --password="$DB_PASS" $EXTRA || true
 }
 
 install_wp
 install_test_suite
 install_db
+
+echo "✅ WordPress test suite installed successfully."
