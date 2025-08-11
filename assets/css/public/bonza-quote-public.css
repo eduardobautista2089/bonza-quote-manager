@@ -1,0 +1,49 @@
+/* Bonza Quote Flash Message */
+.bonza-quote-flash {
+    position: fixed;
+    top: var(--bonza-flash-top, 20px);
+    right: var(--bonza-flash-right, 20px);
+
+    /* Background color from theme's primary, fallback to green */
+    background: var(--wp--preset--color--primary, #4caf50);
+
+    /* Text color from theme's background or white */
+    color: var(--wp--preset--color--background, #fff);
+
+    padding: var(--wp--preset--spacing--20, 12px) var(--wp--preset--spacing--30, 16px);
+    border-radius: var(--wp--custom--radius--small, 4px);
+    box-shadow: var(--wp--custom--shadow--sm, 0 4px 10px rgba(0,0,0,0.15));
+
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s ease;
+    z-index: 9999;
+
+    font-size: var(--wp--preset--font-size--small, 14px);
+    font-family: var(--wp--preset--font-family--body, inherit);
+}
+
+/* Success Variation */
+.bonza-quote-flash.success {
+    background: var(--wp--preset--color--success, #28a745);
+}
+
+/* Error Variation */
+.bonza-quote-flash.error {
+    background: var(--wp--preset--color--error, #e53935);
+}
+
+/* Animations (optional) */
+@keyframes bonzaFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bonzaFadeOut {
+    to {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+}
