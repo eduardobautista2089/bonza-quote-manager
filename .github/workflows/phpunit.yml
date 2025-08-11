@@ -2,13 +2,9 @@ name: Run PHPUnit Tests
 
 on:
   push:
-    branches:
-      - main
-      - master
+    branches: [main, master]
   pull_request:
-    branches:
-      - main
-      - master
+    branches: [main, master]
 
 jobs:
   test:
@@ -52,8 +48,27 @@ jobs:
           rm -rf wordpress-develop
 
       - name: Prepare WordPress test environment
+        run: echo "WP_TESTS_DIR=wordpress-tests-lib" >> $GITHUB_ENV
+
+      - name: Create wp-tests-config.php
         run: |
-          echo "WP_TESTS_DIR=wordpress-tests-lib" >> $GITHUB_ENV
+          cat > wordpress-tests-lib/wp-tests-config.php <<EOL
+          <?php
+          define( 'DB_NAME', '${DB_NAME}' );
+          define( 'DB_USER', '${DB_USER}' );
+          define( 'DB_PASSWORD', '${DB_PASS}' );
+          define( 'DB_HOST', '${DB_HOST}' );
+          define( 'DB_CHARSET', 'utf8' );
+          define( 'DB_COLLATE', '' );
+          define( 'WP_DEBUG', true );
+          \$table_prefix  = 'wptests_';
+          define( 'ABSPATH', dirname( __FILE__ ) . '/' );
+          EOL
+        env:
+          DB_NAME: wordpress_test
+          DB_USER: wordpress
+          DB_PASS: wordpress
+          DB_HOST: 127.0.0.1
 
       - name: Run PHPUnit tests
         env:
