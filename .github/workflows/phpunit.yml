@@ -41,10 +41,11 @@ jobs:
 
       - name: Download WordPress core + test suite
         run: |
-          rm -rf wordpress-tests-lib src
+          rm -rf wordpress-tests-lib
           git clone --depth=1 https://github.com/WordPress/wordpress-develop.git
-          mv wordpress-develop/src src
-          mv wordpress-develop/tests/phpunit wordpress-tests-lib
+          mkdir wordpress-tests-lib
+          mv wordpress-develop/src wordpress-tests-lib/src
+          mv wordpress-develop/tests/phpunit/includes wordpress-tests-lib/includes
           cp wordpress-develop/wp-tests-config-sample.php wordpress-tests-lib/wp-tests-config.php
           rm -rf wordpress-develop
 
