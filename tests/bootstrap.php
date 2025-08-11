@@ -8,13 +8,13 @@ if ( ! $_tests_dir ) {
 
 require_once $_tests_dir . '/includes/functions.php';
 
-// Suppress only the known "twentytwentyfive/format" block binding notice in WP 6.5+
-tests_add_filter( 'doing_it_wrong_trigger_error', function( $trigger, $function, $message ) {
-    if ( strpos( $message, 'twentytwentyfive/format' ) !== false ) {
-        return false; // Ignore this specific notice
-    }
-    return $trigger; // Keep other notices intact
-}, 10, 3 );
+// Force a lightweight theme to avoid twentytwentyfive block binding registration
+tests_add_filter( 'pre_option_template', function() {
+    return 'classic';
+} );
+tests_add_filter( 'pre_option_stylesheet', function() {
+    return 'classic';
+} );
 
 // Start up the WP testing environment
 require $_tests_dir . '/includes/bootstrap.php';
