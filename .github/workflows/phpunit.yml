@@ -39,6 +39,13 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
+      - name: Download WordPress core
+        run: |
+          mkdir src
+          curl -o wordpress.tar.gz https://wordpress.org/latest.tar.gz
+          tar --strip-components=1 -zxmf wordpress.tar.gz -C src
+          rm wordpress.tar.gz
+
       - name: Download WordPress test library
         run: |
           rm -rf wordpress-tests-lib
@@ -54,10 +61,6 @@ jobs:
           sed -i "s/yourusernamehere/${DB_USER}/" wordpress-tests-lib/wp-tests-config.php
           sed -i "s/yourpasswordhere/${DB_PASS}/" wordpress-tests-lib/wp-tests-config.php
           sed -i "s|localhost|${DB_HOST}|" wordpress-tests-lib/wp-tests-config.php
-          sed -i "s/example\.org/example.org/" wordpress-tests-lib/wp-tests-config.php
-          sed -i "s/admin@example\.org/admin@example.org/" wordpress-tests-lib/wp-tests-config.php
-          sed -i "s/Test Blog/Test Blog/" wordpress-tests-lib/wp-tests-config.php
-          sed -i "s:php:php:" wordpress-tests-lib/wp-tests-config.php
         env:
           DB_NAME: wordpress_test
           DB_USER: wordpress
