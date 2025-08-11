@@ -9,7 +9,10 @@ A custom WordPress plugin for managing incoming service quote requests. Built as
 ### ✅ Frontend Quote Form
 - Embed with `[bonza_quote_form]` shortcode
 - Fields: **Name**, **Email**, **Service Type**, and **Notes**
-- Submissions are saved with a `pending` status
+- Fully accessible following WCAG guidelines (keyboard-friendly, ARIA labels, and semantic markup)
+- Supports AJAX form submission for a seamless, page-refresh-free user experience
+- Supports changeable language with full integration into WordPress translation functions (__() and _e())
+- Submissions are saved with a pending status
 - Success message shown after submission
 
 ### 🔐 Admin Quote Dashboard
@@ -21,6 +24,7 @@ A custom WordPress plugin for managing incoming service quote requests. Built as
 - OOP (Object-Oriented Programming) structure
 - Clean, modular codebase following WordPress best practices
 - Full sanitization, escaping, and security implementation
+- Translation-ready for multi-language support
 
 ---
 
